@@ -120,7 +120,7 @@ def desparsify(mutdata,exonsize,gmtfile,cangenes,normMut=True):
     pathway_scores = pathway_scores.transpose()
     
     tfin = time.time()
-    print("Runtime: ",tfin-tinit)
+    print("Sambar runtime: ",tfin-tinit)
     
     return mt,pathway_scores
 
@@ -137,7 +137,7 @@ def binomial_dist(u,v):
 
 def clustering(pt, kmin,kmax):
     """Computes the clustering for the pathways matrix and returns a dataframe with the groups with k clusters from kmin to kmax."""
-    
+    tinit = time.time()
     Y = pdist(pt.transpose(),binomial_dist) # Computes the distance matrix. pt is transposed because the pdist function takes rows as input and what we want to cluster are the samples.
     Z = linkage(Y,"complete") #Linkage of the clusters using the distance matrix and the complete method.
     
@@ -148,6 +148,8 @@ def clustering(pt, kmin,kmax):
         u = [item for sublist in R for item in sublist]
         df["X"+str(k)] =u
         df.index = pt.columns
+    tfin = time.time()
+    print("Clustering runtime: "tfin-tinit)
     return df.transpose()
 
 def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4):
