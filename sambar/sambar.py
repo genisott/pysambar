@@ -165,6 +165,8 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     mt_out.csv -> processed gene mutation scores.
     pt_out.csv -> pathway mutation scores
     clustergroups.csv -> matrix of pertinence to a group in the clustering.
+    
+    The function also returns the pathway matrix, and the groups dataframe as python objects.
     """
     mut = pd.read_csv(mut_file,index_col=0)
     esize = pd.read_csv(esize_file,index_col=0)
