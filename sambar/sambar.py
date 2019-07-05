@@ -168,18 +168,14 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     esize = pd.read_csv(esize_file,index_col=0)
     file = open(genes_file) # Loads the gmt file
     gene_line = file.readline()
-    genes = set(gene_line.split("\t"))
-    
-    os.mkdir("output")
-
-    
+    genes = set(gene_line.split("\t"))    
     mt,pt = desparsify(mut,esize,gmtfile,genes,normPatient)
     
-    pt.to_csv("output/pt_out.csv")
-    mt.to_csv("output/mt_out.csv")
+    pt.to_csv("pt_out.csv")
+    mt.to_csv("mt_out.csv")
     
     groups = clustering(pt,kmin,kmax)
-    groups.to_csv("output/clustergroups.csv")
+    groups.to_csv("clustergroups.csv")
     return pt,groups
 
 
