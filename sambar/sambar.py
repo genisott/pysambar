@@ -126,6 +126,7 @@ def desparsify(mutdata,exonsize,gmtfile,cangenes,normMut=True):
 
 def binomial_dist(u,v):
     """Implementation of the binomial dissimilarity funcion or Millar distance from the vegan:vegdist package in R."""
+    np.seterr(divide='ignore', invalid='ignore') #The following steps raise divide by zero errors. This avoids the error to show up as it is not a problem since it is processed afterwards.
     x,y=u,v
     nk = x+y
     lognk = np.nan_to_num(np.log(nk))
