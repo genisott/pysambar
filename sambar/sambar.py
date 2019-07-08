@@ -150,7 +150,7 @@ def clustering(pt, kmin,kmax):
         df["X"+str(k)] =u
         df.index = pt.columns
     tfin = time.time()
-    print("Clustering runtime: "tfin-tinit)
+    print("Clustering runtime: ",tfin-tinit)
     return df.transpose()
 
 def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4):
