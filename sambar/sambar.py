@@ -112,7 +112,7 @@ def desparsify(mutdata,exonsize,gmtfile,cangenes,normMut=True):
     
     #Matrix multiply dataframes to get the pathway mutation scores
     pathway_scores = sign_matrix.dot(mutrate).div(sm,axis=0)
-    
+    pathway_scores = pathway_scores.dropna() #Removes pathways with NaN values.
     #Remove rows and columns with only 0.
     pathway_scores = pathway_scores.drop(list(pathway_scores[(pathway_scores == 0).all(1)].index))
     pathway_scores = pathway_scores.transpose()
@@ -171,7 +171,7 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     """
     mut = pd.read_csv(mut_file,index_col=0)
     esize = pd.read_csv(esize_file,index_col=0)
-    file = open(genes_file) # Loads the gmt file
+    file = open(genes_file) # Loads the cancer associated gene list file
     gene_line = file.readline()
     genes = set(gene_line.split("\t"))    
     mt,pt = desparsify(mut,esize,gmtfile,genes,normPatient)
