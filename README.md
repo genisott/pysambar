@@ -55,7 +55,7 @@ Flags by default in the sambar function:
 
 ``` normPatient=True```  -> Normalizes the mutation data by number of mutations in a sample.
 
-``` kmin=2,kmax=4```  -> Cut-offs if the cluster tree.
+``` kmin=2,kmax=4```  -> Cut-offs of the cluster tree.
 
 ``` gmtMSigDB=True```  -> If the signature file comes from MSigDB the second element of each line is removed to process the format available at the database. This can be toggled off if using a custom signature file.
 
