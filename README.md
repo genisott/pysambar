@@ -1,7 +1,7 @@
 # pySAMBAR #
 ## Subtyping Agglomerated Mutations By Annotation Relations ##
 
-This package is the python implementation of the R SAMBAR package in https://github.com/mararie/SAMBAR.
+This package is the python implementation of the SAMBAR method as implemented in the R https://github.com/mararie/SAMBAR.
 This package uses the python libraries numpy, pandas, networkx and scipy.
 
 The easiest way to install pySAMBAR is by the following procedure using pip:
@@ -10,7 +10,7 @@ git clone https://github.com/genisott/pysambar.git
 cd pysambar
 pip install .
 ```
-To use the package you can import it using: ```import sambar```. And then access the different functions implemented with ```sambar.function()```.
+To use the package you can import it using: ```import pysambar```. And then access the different functions implemented with ```pysambar.function()```.
 
 As an example you can find mutation data of Uterine Corpus Endometrial Carcinoma (UCEC) primary tumpor samples from The Cancer Genome Atlas. This data is in the ToyData folder as well as the MSigDb "Hallmark" gene sets. 
 
@@ -30,7 +30,7 @@ The next step in SAMBAR is de-sparsification of these gene mutation scores (aggl
 
 Finally, SAMBAR uses binomial distance to cluster the pathway mutation scores. The cluster dendrogram is then divided into *k* groups (or a range of *k* groups), and the cluster assignments are returned in a list.
 ## Usage instructions ##
-
+This package includes the functions ```sambar```,```desparsify```,```corgenelength```,```convertgmt```,```clustering``` as well as an implementation of the binomial distance (Millar dissimilarity from the package vegdist from R. To see the full description of each of this functions use ```help(pysambar.function)```.
 
 ## Example ## 
 
