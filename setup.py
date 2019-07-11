@@ -15,5 +15,5 @@ setup(name='pysambar',
     'scipy'
     ],
     package_data={'pysambar': ['ToyData/*']},
-    data_files=[('ToyData', ["ToyData/esizef.csv","ToyData/genes.txt","ToyData/mut.ucec.csv","ToyData/h.all.v6.1.symbols.gmt"])],
+    #data_files=[('ToyData', ["ToyData/esizef.csv","ToyData/genes.txt","ToyData/mut.ucec.csv","ToyData/h.all.v6.1.symbols.gmt"])],
     zip_safe=False)
