@@ -36,6 +36,7 @@ This package includes the functions ```sambar```,```desparsify```,```corgeneleng
 
 Run the SAMBAR method with the ToyData from the UCEC mutation data:
 ``` import pysambar as sm
+
 pathways, groups = sm.sambar("/ToyData/mut.ucec.csv","ToyData/esizef.csv",'ToyData/genes.txt','ToyData/h.all.v6.1.symbols.gmt')
 ``` 
 The output of this command will be four files:
