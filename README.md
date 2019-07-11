@@ -13,6 +13,7 @@ pip install .
 To use the package you can import it using: ```import sambar```. And then access the different functions implemented with ```sambar.function()```.
 
 As an example you can find mutation data of Uterine Corpus Endometrial Carcinoma (UCEC) primary tumpor samples from The Cancer Genome Atlas. This data is in the ToyData folder as well as the MSigDb "Hallmark" gene sets. 
+
 The program will compute the pathway mutation scores and clustering for *k*=2-4 (by default) and output the corrected mutation scores, the pathway mutation scores, and the clustering table. 
 
 ## More information on the method ##
@@ -28,3 +29,18 @@ The next step in SAMBAR is de-sparsification of these gene mutation scores (aggl
 <a href="https://www.codecogs.com/eqnedit.php?latex=\dpi{100}&space;P_{iq}=\frac{\displaystyle\sum_{j&space;\in&space;q}&space;G_{ij}/{\displaystyle\sum_{q'}&space;M_{jq'}}}{\displaystyle\sum_{j}&space;M_{jq}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;P_{iq}=\frac{\displaystyle\sum_{j&space;\in&space;q}&space;G_{ij}/{\displaystyle\sum_{q'}&space;M_{jq'}}}{\displaystyle\sum_{j}&space;M_{jq}}" title="P_{iq}=\frac{\displaystyle\sum_{j \in q} G_{ij}/{\displaystyle\sum_{q'} M_{jq'}}}{\displaystyle\sum_{j} M_{jq}}" /></a>.
 
 Finally, SAMBAR uses binomial distance to cluster the pathway mutation scores. The cluster dendrogram is then divided into *k* groups (or a range of *k* groups), and the cluster assignments are returned in a list.
+## Usage instructions ##
+
+
+## Example ## 
+
+
+
+
+
+
+
+
+
+
+
