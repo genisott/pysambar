@@ -10,9 +10,10 @@ git clone https://github.com/genisott/pysambar.git
 cd pysambar
 pip install .
 ```
-To use the package: ```library(SAMBAR)```.
+To use the package you can import it using: ```import sambar```. And then access the different functions implemented with ```sambar.function()```.
 
-As an example, we've added mutation data of Uterine Corpus Endometrial Carcinoma (UCEC) primary tumor samples, obtained from The Cancer Genome Atlas, to this package. Running ```subtypes <- sambar()``` will run SAMBAR with default settings on these data, using desparsification based on based on the MSigDb "Hallmark" gene sets. It will return a list of samples belonging to *k*=2-4 subtypes.
+As an example you can find mutation data of Uterine Corpus Endometrial Carcinoma (UCEC) primary tumpor samples from The Cancer Genome Atlas. This data is in the ToyData folder as well as the MSigDb "Hallmark" gene sets. 
+The program will compute the pathway mutation scores and clustering for *k*=2-4 (by default) and output the corrected mutation scores, the pathway mutation scores, and the clustering table. 
 
 ## More information on the method ##
 
