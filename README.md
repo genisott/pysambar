@@ -36,18 +36,28 @@ This package includes the functions ```sambar```,```desparsify```,```corgeneleng
 
 Run the SAMBAR method with the ToyData from the UCEC mutation data:
 ``` import pysambar as sm
-sm.sambar("/ToyData/mut.ucec.csv","ToyData/esizef.csv",'ToyData/genes.txt','ToyData/h.all.v6.1.symbols.gmt')
+pathways, groups = sm.sambar("/ToyData/mut.ucec.csv","ToyData/esizef.csv",'ToyData/genes.txt','ToyData/h.all.v6.1.symbols.gmt')
 ``` 
 The output of this command will be four files:
+
 ``` pt_out.csv```  -> Pathway mutation score matrix.
+
 ``` mt_out.csv```  -> Processed gene mutation score matrix.
+
 ``` dist_matrix.csv ``` -> Distance matrix with binomial distance in numpy condensed format.
+
 ``` clustergroups.csv```  -> Matrix of pertinence to a cluster.
+
+The function also returns the pathway matrix dataframe and the cluster group dataframe as python variables.
 ### Notes ###
 Flags by default in the sambar function:
+
 ``` normPatient=True```  -> Normalizes the mutation data by number of mutations in a sample.
+
 ``` kmin=2,kmax=4```  -> Cut-offs if the cluster tree.
+
 ``` gmtMSigDB=True```  -> If the signature file comes from MSigDB the second element of each line is removed to process the format available at the database. This can be toggled off if using a custom signature file.
+
 ``` subcangenes=True```  -> Subset to cancer associated genes. By default uses the file provided in ToyData.
 
 
