@@ -5,8 +5,16 @@ import os
 import networkx as nx
 from scipy.spatial.distance import pdist
 from scipy.cluster.hierarchy import linkage,cut_tree
+import pkg_resources
 
-def corgenelength(mut,cangenes,esize,normbysample=True):
+## Default toydata files
+esize = pkg_resources.resource_filename('sambar', 'ToyData/esizef.csv')
+genes = pkg_resources.resource_filename('sambar', 'ToyData/genes.txt')
+sign = pkg_resources.resource_filename('sambar', 'ToyData/h.all.v6.1.symbols.gmt')
+mut = pkg_resources.resource_filename('sambar', 'ToyData/mut.ucec.csv')
+
+
+def corgenelength(mut,cangenes,esize,normbysample=True,subcangenes=True):
     """Function to normalize gene mutation scores by gene length.
     mut should be a dataframe of mutation scores with genes as columns and samples as rows. 
     (VERY IMPORTANT, IF OTHERWISE MATRIX SHOULD BE TRANSPOSED OR IT WON'T WORK!!!)
@@ -16,9 +24,10 @@ def corgenelength(mut,cangenes,esize,normbysample=True):
     It also normalizes the gene mutation scores in a sample by the total mutations within the sample. (Can be deactivated with normbysample=False.)
     """
     #Subsets mutation data to cancer-associated genes.
-    mut_cangenes = cangenes.intersection(set(mut.columns))
-    mut = mut[list(mut_cangenes)]
-    
+    if(subcangenes):
+    	mut_cangenes = cangenes.intersection(set(mut.columns))
+    	mut = mut[list(mut_cangenes)]
+    else: mut_cangenes = set(mut.columns)
     #Intersection of genes in the mutation data and the length data.
     mut_esize = list(mut_cangenes.intersection(set(esize.columns)))
     mut = mut[mut_esize]
@@ -41,7 +50,7 @@ def corgenelength(mut,cangenes,esize,normbysample=True):
     assert mut.shape!=(0,0),"Are you sure your mutation matrix has the proper orientation? Genes as columns, samples as rows."
     return mut[sorted(mut.columns)]
 
-def convertgmt(gmtfile, cangenes):
+def convertgmt(gmtfile, cangenes,gmtMSigDB=True,subcangenes=True):
     """This function takes as input the name of a gmt file containing lists of genes associated to pathways. 
     It outputs an adjacency matrix of genes and pathways. 
     It also subsets the genes to a list of cancer-associated genes. 
@@ -53,8 +62,9 @@ def convertgmt(gmtfile, cangenes):
     a = dict() #Sets up dictionary
     for entry in pw:
         u = entry[:-1].split("\t",-1) #Process each string separating genes and removing final \n.
-        a[u[0]] = u[2:] #Sets dictionary key the pathway id, value the list of genes removing the link entry.
-
+        if(gmtMSigDB):
+        	a[u[0]] = u[2:] #Sets dictionary key the pathway id, value the list of genes removing the link entry.
+        else: a[u[0]] = u[1:]
     #Set of all genes in the dictionary
     b=set()
     for i in a.keys():
@@ -77,19 +87,20 @@ def convertgmt(gmtfile, cangenes):
     sign_matrix = sign_matrix.loc[sorted(P)]
  
     #Subset pathways to cancer-associated genes
-    sign_cangenes = cangenes.intersection(set(sign_matrix.columns))
-    sign_matrix = sign_matrix[list(sign_cangenes)]
+    if(subcangenes):
+    	sign_cangenes = cangenes.intersection(set(sign_matrix.columns))
+    	sign_matrix = sign_matrix[list(sign_cangenes)]
     
     return sign_matrix[sorted(sign_matrix.columns)]
 
-def desparsify(mutdata,exonsize,gmtfile,cangenes,normMut=True):
+def desparsify(mutdata,exonsize,gmtfile,cangenes,normMut=True,gmtMSigDB=True,subcangenes=True):
     """Applies the sambar method to de-sparcify the mutation data using the pathway signatures in the gmtfile."""
     tinit = time.time()  
     
     #Gets corrected gene mutation scores. Subseted to cancer-associated genes.
-    mutrate = corgenelength(mutdata,cangenes,exonsize,normMut)
+    mutrate = corgenelength(mutdata,cangenes,exonsize,normMut,subcangenes)
     #Gets adjacency matrix of genes and pathways. Subseted to cancer-associated genes.
-    sign_matrix = convertgmt(gmtfile,cangenes)
+    sign_matrix = convertgmt(gmtfile,cangenes,gmtMSigDB,subcangenes)
 
     #Match genes in both lists
     genes_ms = sorted(list(set(mutrate.columns).intersection(set(sign_matrix.columns))))
@@ -141,7 +152,8 @@ def clustering(pt, kmin,kmax):
     tinit = time.time()
     Y = pdist(pt.transpose(),binomial_dist) # Computes the distance matrix. pt is transposed because the pdist function takes rows as input and what we want to cluster are the samples.
     Z = linkage(Y,"complete") #Linkage of the clusters using the distance matrix and the complete method.
-    
+    np.savetxt("dist_matrix.csv",Y,delimiter=",")#Saves the distance matrix. Note that the output of pdist is a condensed matrix!!
+
     #Building the output dataframe.
     df = pd.DataFrame()
     for k in range(kmin,kmax+1):
@@ -153,7 +165,7 @@ def clustering(pt, kmin,kmax):
     print("Clustering runtime: ",tfin-tinit)
     return df.transpose()
 
-def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4):
+def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatient=True,kmin=2,kmax=4,gmtMSigDB=True,subcangenes=True):
     """Runs sambar and outputs the pt matrix, the mt matrix and the clustering matrix.
     mutfile -> matrix of mutations with genes as columns and samples as rows. Format CSV.
     esize_file -> file with genes and their length.
@@ -161,11 +173,14 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     gmt_file -> genelist by pathway, format from MSigDB.
     normPatien -> Normalize mutation data by number of mutations in a sample.
     kmin,kmax -> Number of groups in the clustering.
+    gmtMSigDB -> Whether the signature file comes from MSigDB or not. (Important for processing the file).
+    subcangenes -> Makes optional subsetting to cancer-associated genes.
     
     Outputs:
     mt_out.csv -> processed gene mutation scores.
     pt_out.csv -> pathway mutation scores
     clustergroups.csv -> matrix of pertinence to a group in the clustering.
+    dist_matrix.csv -> Computation of the distance matrix is resource-consuming so the matrix is writen so it doesn't have to be computed again.
     
     The function also returns the pathway matrix, and the groups dataframe as python objects.
     """
@@ -174,7 +189,7 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     file = open(genes_file) # Loads the cancer associated gene list file
     gene_line = file.readline()
     genes = set(gene_line.split("\t"))    
-    mt,pt = desparsify(mut,esize,gmtfile,genes,normPatient)
+    mt,pt = desparsify(mut,esize,gmtfile,genes,normPatient,gmtMSigDB,subcangenes)
     
     pt.to_csv("pt_out.csv")
     mt.to_csv("mt_out.csv")
@@ -182,6 +197,7 @@ def sambar(mut_file,esize_file,genes_file,gmtfile,normPatient=True,kmin=2,kmax=4
     groups = clustering(pt,kmin,kmax)
     groups.to_csv("clustergroups.csv")
     return pt,groups
+
 
 
 
