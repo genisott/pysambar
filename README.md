@@ -1,14 +1,16 @@
 # pySAMBAR #
 ## Subtyping Agglomerated Mutations By Annotation Relations ##
-This R package depends on CRAN packages vegan, stats, and utils.
 
-The easiest way to install the R package SAMBAR is via the devtools package from CRAN:
+This package is the python implementation of the R SAMBAR package in https://github.com/mararie/SAMBAR.
+This package uses the python libraries numpy, pandas, networkx and scipy.
+
+The easiest way to install pySAMBAR is by the following procedure using pip:
 ```
-install.packages("devtools")
-library(devtools)
-devtools::install_github("mararie/SAMBAR")
+git clone https://github.com/genisott/pysambar.git
+cd pysambar
+pip install .
 ```
-And then load the package using: ```library(SAMBAR)```.
+To use the package: ```library(SAMBAR)```.
 
 As an example, we've added mutation data of Uterine Corpus Endometrial Carcinoma (UCEC) primary tumor samples, obtained from The Cancer Genome Atlas, to this package. Running ```subtypes <- sambar()``` will run SAMBAR with default settings on these data, using desparsification based on based on the MSigDb "Hallmark" gene sets. It will return a list of samples belonging to *k*=2-4 subtypes.
 
