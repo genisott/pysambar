@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(name='pysambar',
     version='0.1',
     description='Python implementation of SAMBAR',
-    url='https://github.com/genisott/sambar',
+    url='https://github.com/genisott/pysambar',
     author='Genís Calderer',
     author_email='genis.calderer@gmail.com',
     license='MIT',
