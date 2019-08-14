@@ -147,14 +147,14 @@ def binomial_dist(u,v):
     d = sum(np.nan_to_num((dn/nk)))
     return np.where(d<0, 0, d)
 
-def clustering(pt, kmin,kmax,distance):
+def clustering(pt, kmin,kmax,distance,linkagem):
     """Computes the clustering for the pathways matrix and returns a dataframe with the groups with k clusters from kmin to kmax."""
     tinit = time.time()
     if(distance=="binomial"):
         Y = pdist(pt.transpose(),binomial_dist) # Computes the distance matrix. pt is transposed because the pdist function takes rows as input and what we want to cluster are the samples.
     if(distance=="cosine"):
         Y = pdist(pt.transpose(),"cosine")
-    Z = linkage(Y,"complete") #Linkage of the clusters using the distance matrix and the complete method.
+    Z = linkage(Y,linkagem) #Linkage of the clusters using the distance matrix and the complete method.
     np.savetxt("dist_matrix.csv",Y,delimiter=",")#Saves the distance matrix. Note that the output of pdist is a condensed matrix!!
 
     #Building the output dataframe.
@@ -168,7 +168,7 @@ def clustering(pt, kmin,kmax,distance):
     print("Clustering runtime: ",tfin-tinit)
     return df.transpose()
 
-def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatient=True,kmin=2,kmax=4,gmtMSigDB=True,subcangenes=True,distance="binomial"):
+def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatient=True,kmin=2,kmax=4,gmtMSigDB=True,subcangenes=True,distance="binomial",linkagem="complete",cluster=True):
     """Runs sambar and outputs the pt matrix, the mt matrix and the clustering matrix.
     mutfile -> matrix of mutations with genes as columns and samples as rows. Format CSV.
     esize_file -> file with genes and their length.
@@ -197,7 +197,9 @@ def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatie
     pt.to_csv("pt_out.csv")
     mt.to_csv("mt_out.csv")
     
-    groups = clustering(pt,kmin,kmax,distance)
+    if (!cluster): return pt
+    
+    groups = clustering(pt,kmin,kmax,distance,linkagem)
     groups.to_csv("clustergroups.csv")
     return pt,groups
 
