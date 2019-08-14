@@ -197,7 +197,7 @@ def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatie
     pt.to_csv("pt_out.csv")
     mt.to_csv("mt_out.csv")
     
-    if (!cluster): return pt
+    if (not cluster): return pt
     
     groups = clustering(pt,kmin,kmax,distance,linkagem)
     groups.to_csv("clustergroups.csv")
