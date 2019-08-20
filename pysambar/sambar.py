@@ -3,7 +3,7 @@ import pandas as pd
 import time
 import os
 import networkx as nx
-from scipy.spatial.distance import pdist,cosine
+from scipy.spatial.distance import pdist,cosine,squareform
 from scipy.cluster.hierarchy import linkage,cut_tree
 import pkg_resources
 
@@ -152,10 +152,10 @@ def clustering(pt, kmin,kmax,distance,linkagem):
     tinit = time.time()
     if(distance=="binomial"):
         Y = pdist(pt.transpose(),binomial_dist) # Computes the distance matrix. pt is transposed because the pdist function takes rows as input and what we want to cluster are the samples.
-    if(distance=="cosine"):
-        Y = pdist(pt.transpose(),"cosine")
+    else:
+        Y = pdist(pt.transpose(),distance)
     Z = linkage(Y,linkagem) #Linkage of the clusters using the distance matrix and the complete method.
-    np.savetxt("dist_matrix.csv",Y,delimiter=",")#Saves the distance matrix. Note that the output of pdist is a condensed matrix!!
+    np.savetxt("dist_matrix.csv",squareform(Y),delimiter=",")#Saves the distance matrix. Note that the output of pdist is a condensed matrix!!
 
     #Building the output dataframe.
     df = pd.DataFrame()
@@ -178,6 +178,9 @@ def sambar(mut_file=mut,esize_file=esize,genes_file=genes,gmtfile=sign,normPatie
     kmin,kmax -> Number of groups in the clustering.
     gmtMSigDB -> Whether the signature file comes from MSigDB or not. (Important for processing the file).
     subcangenes -> Makes optional subsetting to cancer-associated genes.
+    distance -> Similarity metric for the clustering. Default is binomial distance but any distance from scipy.spatial.distance can be used.
+    linkagem -> Linkage method. Default is complete.
+    cluster -> Whether the clustering has to be compute or the output will just be the pathway mutation scores.
     
     Outputs:
     mt_out.csv -> processed gene mutation scores.
